@@ -11,7 +11,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.imie.business.Etablissement;
+import fr.imie.dTO.EtablissementDTO;
 
 /**
  * @author imiedev
@@ -23,14 +23,14 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 	 * 
 	 */
 	@Override
-	public List<Etablissement> listerTousLesEtablissements() {
+	public List<EtablissementDTO> listerTousLesEtablissements() {
 
 		Connection connection = null;
 		String selectAllEtabissementQuery = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 
-		List<Etablissement> listeEtablissements = new ArrayList<>();
+		List<EtablissementDTO> listeEtablissements = new ArrayList<>();
 		;
 
 		try {
@@ -40,7 +40,7 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 			resultSet = statement.executeQuery(selectAllEtabissementQuery);
 			while (resultSet.next()) {
 				// 1)Créer l'établissement
-				Etablissement etablissement = new Etablissement();
+				EtablissementDTO etablissement = new EtablissementDTO();
 				// 2)Initialiser l'étblissement
 				String nom = resultSet.getString("nom");
 				String numrue = resultSet.getString("numrue");
@@ -74,6 +74,46 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 		}
 
 		return listeEtablissements;
+
+	}
+
+	@Override
+	public void creerEtablissement(EtablissementDTO etablissementDTO) {
+		Connection connection = null;
+		String createEtablissementQuery = null;
+		Statement statement = null;
+		ResultSet resultSet = null;
+
+		try {
+			// 1) Persistence en base de données
+			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC", "postgres", "postgres");
+			createEtablissementQuery = String.format(
+					"insert into Etablissement (nom,numrue,nomrue,codepostal,ville) values ('%s', '%s', '%s', '%s', '%s') ",
+					etablissementDTO.getNom(), etablissementDTO.getNumRue(), etablissementDTO.getNomRue(), etablissementDTO.getCodePostal(), etablissementDTO.getVille());
+			statement = connection.createStatement();
+			statement.executeUpdate(createEtablissementQuery);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				if (resultSet != null && !resultSet.isClosed()) {
+					resultSet.close();
+				}
+				if (statement != null && !statement.isClosed()) {
+					statement.close();
+				}
+				if (connection != null && !connection.isClosed()) {
+					connection.close();
+				}
+
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
 
 	}
 }

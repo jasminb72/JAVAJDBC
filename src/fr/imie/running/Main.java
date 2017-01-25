@@ -3,9 +3,14 @@
  */
 package fr.imie.running;
 
-import fr.imie.business.Etablissement;
+
 import fr.imie.business.EtablissementBusiness;
 import fr.imie.business.IEtablissementBusiness;
+
+import fr.imie.persistence.EtablissementPersistence;
+import fr.imie.persistence.IEtablissementPersistence;
+
+import fr.imie.presentation.IHM;
 
 /**
  * @author imiedev
@@ -14,10 +19,12 @@ import fr.imie.business.IEtablissementBusiness;
 public class Main {
 
 	public static void main(String[] args) {
-		IEtablissementBusiness dTO = new EtablissementBusiness();
-		for (Etablissement etablissement : dTO.listerTousLesEtablissements()) {
-			System.out.printf("Nom etablissement:%s\n", etablissement.getNom());
-		}
+		
+		IEtablissementPersistence iEP = new EtablissementPersistence();
+		IEtablissementBusiness iEB = new EtablissementBusiness(iEP);
+		IHM iHM = new IHM(iEB);
+		
+		iHM.init();
 
 	}
 }

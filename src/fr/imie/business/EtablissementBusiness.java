@@ -5,7 +5,7 @@ package fr.imie.business;
 
 import java.util.List;
 
-import fr.imie.persistence.EtablissementPersistence;
+import fr.imie.dTO.EtablissementDTO;
 import fr.imie.persistence.IEtablissementPersistence;
 
 /**
@@ -13,13 +13,28 @@ import fr.imie.persistence.IEtablissementPersistence;
  *
  */
 public class EtablissementBusiness implements IEtablissementBusiness{
+	IEtablissementPersistence iEP;
+	
+	public EtablissementBusiness(IEtablissementPersistence iEP) {
+		this.iEP=iEP;
+	}
 
 	/**
 	 * 
+	 * 
 	 */
+	
+	
+	
+	
+	public List<EtablissementDTO> listerTousLesEtablissements() {
+		
+		return iEP.listerTousLesEtablissements();
+	}
 
-	public List<Etablissement> listerTousLesEtablissements() {
-		IEtablissementPersistence ep=new EtablissementPersistence();
-		return ep.listerTousLesEtablissements();
+	@Override
+	public void creerEtablissement(EtablissementDTO etablissementDTO) {
+		iEP.creerEtablissement(etablissementDTO);
+		
 	}
 }

@@ -1,13 +1,13 @@
 /**
  * 
  */
-package fr.imie.business;
+package fr.imie.dTO;
 
 /**
  * @author imiedev
  *
  */
-public class Etablissement {
+public class EtablissementDTO {
 
 	private String nom;
 	private String numRue;

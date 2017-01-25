@@ -8,7 +8,7 @@ package fr.imie.dTO;
  *
  */
 public class EtablissementDTO {
-
+	private int id;
 	private String nom;
 	private String numRue;
 	private String nomRue;
@@ -25,6 +25,24 @@ public class EtablissementDTO {
 		this.nomRue = nomRue;
 		this.codePostal = codePostal;
 		this.ville = ville;
+	}
+
+	public void initialize(int id, String nom, String numRue, String nomRue, String codePostal, String ville) {
+		this.id=id;
+		this.nom = nom;
+		this.numRue = numRue;
+		this.nomRue = nomRue;
+		this.codePostal = codePostal;
+		this.ville = ville;
+		
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public String getNom() {
@@ -67,4 +85,5 @@ public class EtablissementDTO {
 		this.ville = ville;
 	}
 
+	
 }

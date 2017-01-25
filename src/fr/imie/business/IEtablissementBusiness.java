@@ -10,4 +10,8 @@ public interface IEtablissementBusiness {
 	public List<EtablissementDTO> listerTousLesEtablissements() ;
 
 	public void creerEtablissement(EtablissementDTO etablissement);
+
+	public void supprimerEtablissement(int id);
+
+	public void modifierEtablissement(int id);
 }

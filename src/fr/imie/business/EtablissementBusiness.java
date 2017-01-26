@@ -3,7 +3,8 @@
  */
 package fr.imie.business;
 
-import java.util.List;
+
+import java.util.Map;
 
 import fr.imie.dTO.EtablissementDTO;
 import fr.imie.persistence.IEtablissementPersistence;
@@ -24,7 +25,7 @@ public class EtablissementBusiness implements IEtablissementBusiness {
 	 * 
 	 */
 
-	public List<EtablissementDTO> listerTousLesEtablissements() {
+	public Map<Integer, EtablissementDTO> listerTousLesEtablissements() {
 
 		return iEP.listerTousLesEtablissements();
 	}
@@ -36,14 +37,14 @@ public class EtablissementBusiness implements IEtablissementBusiness {
 	}
 
 	@Override
-	public void supprimerEtablissement(int id) {
-		iEP.supprimerEtablissement(id);
+	public void supprimerEtablissement(EtablissementDTO eDto) {
+		iEP.supprimerEtablissement(eDto);
 
 	}
 
 	@Override
-	public void modifierEtablissement(int id) {
-		iEP.modifierEtablissement(id);
+	public void modifierEtablissement(EtablissementDTO eDto) {
+		iEP.modifierEtablissement(eDto);
 		
 	}
 }

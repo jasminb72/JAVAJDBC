@@ -1,15 +1,15 @@
 package fr.imie.persistence;
 
-import java.util.List;
+import java.util.Map;
 
 import fr.imie.dTO.EtablissementDTO;
 
 public interface IEtablissementPersistence {
-	public List<EtablissementDTO> listerTousLesEtablissements();
+	public Map<Integer, EtablissementDTO> listerTousLesEtablissements();
 
 	public void creerEtablissement(EtablissementDTO etablissementDTO);
 
-	public void supprimerEtablissement(int id);
+	public void modifierEtablissement(EtablissementDTO eDto);
 
-	public void modifierEtablissement(int id);
+	public void supprimerEtablissement(EtablissementDTO eDto);
 }

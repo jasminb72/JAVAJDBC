@@ -1,6 +1,8 @@
 package fr.imie.presentation;
 
+import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import fr.imie.business.IEtablissementBusiness;
 import fr.imie.dTO.EtablissementDTO;
@@ -8,40 +10,75 @@ import fr.imie.dTO.EtablissementDTO;
 public class IHM {
 
 	IEtablissementBusiness iEB;
+	Map<Integer, EtablissementDTO> listeEtablissements;
 
 	public IHM(IEtablissementBusiness iEB) {
 		this.iEB = iEB;
 	}
 
-	public void init() {
-		// crée un établissement par défaut
-		this.créerEtablissementDefault();
+	public void start() {
 
-		// liste tous les établissements dans la console
-		this.listerTousLesEtablissements();
+		Scanner sc = new Scanner(System.in);
+		Integer id = 0;
 
-		Scanner sc=new Scanner(System.in);
-		
-		/*
-		 * //Suppression établissement Scanner sc = new Scanner(System.in);
-		 * System.out.println("Quel établissement voulez vous supprimer? (indiquez n°ID)");
-		 * this.supprimerEtablissement(Integer.parseInt(sc.nextLine()));
-		 * 
-		 * 
-		 * // liste tous les établissements dans la console
-		 * this.listerTousLesEtablissements();
-		 */
-		
-		System.out.println("Quel établissement voulez mettre à jour? (indiquez n°ID)");
-		Integer id = Integer.parseInt(sc.nextLine());
-		
-		this.modifierEtablissement(id);
-		
-		
-		
+		String choix = "";
+		do {
+			System.out.println(".------------------.");
+			System.out.println("|      Menu        |");
+			System.out.println("'------------------'");
+			System.out.println("Que voulez vous faire?");
+			System.out.println("1-Créer établissement");
+			System.out.println("2-Modifier établissement");
+			System.out.println("3-Supprimer établissement");
+			System.out.println("4-Lister tous les établissements");
+			System.out.println("X-Sortir");
 
-		// liste tous les établissements dans la console
-		this.listerTousLesEtablissements();
+			choix = sc.nextLine();
+			// if (choix.toUpperCase().equals("X")) {
+			// break;
+			// }
+
+			switch (choix) {
+			case "1":
+				// crée un établissement par défaut
+				this.créerEtablissementDefault();
+				break;
+			case "2":
+				// A Améliorer: ajout de possibilité de modifier champ par champ
+				System.out.println(
+						"Quel établissement voulez vous modifier?(N'hésitez pas à lister les établissements avant)");
+				id = Integer.parseInt(sc.nextLine());
+				listeEtablissements = iEB.listerTousLesEtablissements();
+				if (listeEtablissements.get(id) == null) {
+					System.out.println("Etablissement inexistant. Taper entrer pour continuer");
+					sc.nextLine();
+				} else {
+					this.modifierEtablissement(listeEtablissements.get(id));
+				}
+				break;
+			case "3":
+				System.out.println(
+						"Quel établissement voulez vous supprimer?(N'hésitez pas à lister les établissements avant)");
+				id = Integer.parseInt(sc.nextLine());
+				listeEtablissements = iEB.listerTousLesEtablissements();
+				if (listeEtablissements.get(id) == null) {
+					System.out.println("Etablissement inexistant. Taper entrer pour continuer");
+					sc.nextLine();
+				} else {
+					this.supprimerEtablissement(listeEtablissements.get(id));
+				}
+				break;
+			case "4":
+				// liste tous les établissements dans la console
+				this.AfficherTousLesEtablissements();
+				break;
+			default:
+				break;
+			}
+
+		} while (!choix.toUpperCase().equals("X")); // (choix.equals("x") ==
+													// false);
+
 		sc.close();
 	}
 
@@ -64,25 +101,25 @@ public class IHM {
 		return etablissementDTO;
 	}
 
-	private void listerTousLesEtablissements() {
+	private void AfficherTousLesEtablissements() {
 		// Affiche tous les établissements
-		// for (EtablissementDTO eDTO : iEB.listerTousLesEtablissements()) {
-		int i = 0;
-		for (EtablissementDTO eDTO : iEB.listerTousLesEtablissements()) {
-			i++;
-			System.out.printf("Numéro:%s |;ID:%s, nom etablissement: %s\n", i, eDTO.getId(), eDTO.getNom());
+		EtablissementDTO eDTO;
+		Set<Integer> set = iEB.listerTousLesEtablissements().keySet();
+		for (Integer key : set) {
+			eDTO = iEB.listerTousLesEtablissements().get(key);
+			System.out.printf("ID:%s, nom etablissement: %s\n", eDTO.getId(), eDTO.getNom());
 
 		}
 
 	}
 
-	private void supprimerEtablissement(int id) {
-		iEB.supprimerEtablissement(id);
+	private void supprimerEtablissement(EtablissementDTO etablissementDTO) {
+		iEB.supprimerEtablissement(etablissementDTO);
 
 	}
 
-	private void modifierEtablissement(int id) {
-		iEB.modifierEtablissement(id);
+	private void modifierEtablissement(EtablissementDTO etablissementDTO) {
+		iEB.modifierEtablissement(etablissementDTO);
 
 	}
 }

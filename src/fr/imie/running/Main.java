@@ -24,7 +24,7 @@ public class Main {
 		IEtablissementBusiness iEB = new EtablissementBusiness(iEP);
 		IHM iHM = new IHM(iEB);
 		
-		iHM.init();
+		iHM.start();
 
 	}
 }

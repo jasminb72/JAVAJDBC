@@ -9,8 +9,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import fr.imie.dTO.EtablissementDTO;
 
@@ -24,19 +24,19 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 	 * 
 	 */
 	@Override
-	public List<EtablissementDTO> listerTousLesEtablissements() {
+	public Map<Integer,EtablissementDTO> listerTousLesEtablissements() {
 
 		Connection connection = null;
 		String selectAllEtabissementQuery = null;
 		Statement statement = null;
 		ResultSet resultSet = null;
 
-		List<EtablissementDTO> listeEtablissements = new ArrayList<>();
+		Map<Integer, EtablissementDTO> listeEtablissements = new HashMap<Integer,EtablissementDTO>();
 		;
 
 		try {
 			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC", "postgres", "postgres");
-			selectAllEtabissementQuery = "Select id,nom, numrue, nomrue, codepostal, ville from etablissement";
+			selectAllEtabissementQuery = "Select id,nom, numrue, nomrue, codepostal, ville from etablissement order by id ASC";
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(selectAllEtabissementQuery);
 			while (resultSet.next()) {
@@ -51,7 +51,7 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 				String ville = resultSet.getString("ville");
 				etablissement.initialize(id, nom, numrue, nomrue, codepostal, ville);
 				// 3 Ajouter établissement à la liste
-				listeEtablissements.add(etablissement);
+				listeEtablissements.put(id,etablissement);
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -124,21 +124,20 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 	}
 
 	@Override
-	public void supprimerEtablissement(int id) {
+	public void supprimerEtablissement(EtablissementDTO eDto) {
 		Connection connection = null;
 		String deleteEtablissementQuery = null;
 		PreparedStatement pStatement = null;
-		ResultSet resultSet = null;		
+		ResultSet resultSet = null;
 		Statement statement;
-		
+
 		try {
 			// 1) Persistence en base de données
 			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC", "postgres", "postgres");
-			deleteEtablissementQuery = String.format("delete from etablissement where id = %s",id);
-			System.out.println(deleteEtablissementQuery);
+			deleteEtablissementQuery = String.format("delete from etablissement where id = %s", eDto.getId());
 			statement = connection.createStatement();
 			statement.executeUpdate(deleteEtablissementQuery);
-			//resultSet = statement.executeQuery(deleteEtablissementQuery);
+			// resultSet = statement.executeQuery(deleteEtablissementQuery);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -160,23 +159,26 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 				e.printStackTrace();
 			}
 		}
-		
+
 	}
 
-	public void modifierEtablissement(int id) {
+	public void modifierEtablissement(EtablissementDTO eDto) {
 		Connection connection = null;
 		String deleteEtablissementQuery = null;
 		PreparedStatement pStatement = null;
-		ResultSet resultSet = null;		
+		ResultSet resultSet = null;
 		Statement statement;
-		
+
 		try {
 			// 1) Persistence en base de données
-			connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC", "postgres", "postgres");
-			deleteEtablissementQuery = String.format("update etablissement set nom=nom where id = %s",id);			
+			// connection =
+			// DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC",
+			// "postgres", "postgres");
+			connection = this.getConnection();
+			deleteEtablissementQuery = String.format("update etablissement set nom=nom where id = %s", eDto.getId());
 			statement = connection.createStatement();
 			statement.executeUpdate(deleteEtablissementQuery);
-			//resultSet = statement.executeQuery(deleteEtablissementQuery);
+			// resultSet = statement.executeQuery(deleteEtablissementQuery);
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -189,15 +191,27 @@ public class EtablissementPersistence implements IEtablissementPersistence {
 				if (pStatement != null && !pStatement.isClosed()) {
 					pStatement.close();
 				}
-				if (connection != null && !connection.isClosed()) {
-					connection.close();
-				}
-
+				this.closeConnection(connection);
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
-		
+
+	}
+
+	private Connection getConnection() throws SQLException {
+		return DriverManager.getConnection("jdbc:postgresql://localhost:5432/JDBC", "postgres", "postgres");
+	}
+
+	private Boolean closeConnection(Connection connection) throws SQLException {
+
+		if (connection != null && !connection.isClosed()) {
+			connection.close();
+			return true;
+		}
+
+		return false;
+
 	}
 }

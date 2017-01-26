@@ -2,16 +2,17 @@
 
 package fr.imie.business;
 
-import java.util.List;
+
+import java.util.Map;
 
 import fr.imie.dTO.EtablissementDTO;
 
 public interface IEtablissementBusiness {
-	public List<EtablissementDTO> listerTousLesEtablissements() ;
+	public Map<Integer, EtablissementDTO> listerTousLesEtablissements() ;
 
 	public void creerEtablissement(EtablissementDTO etablissement);
 
-	public void supprimerEtablissement(int id);
+	public void modifierEtablissement(EtablissementDTO etablissementDTO);
 
-	public void modifierEtablissement(int id);
+	public void supprimerEtablissement(EtablissementDTO eDto);
 }
